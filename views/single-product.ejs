@@ -1,0 +1,175 @@
+<!-- prettier-ignore -->
+<% const formatCurrency = (data) => {
+  let temp = data.toString().split("").reverse();
+  let ratusan = "";
+  let ribuan = "";
+  let jutaan = "";
+
+  for (let i = 0; i < temp.length; i++) {
+      if (i < 3) {
+          ratusan += temp[i];
+      } else if (i < 6) {
+          ribuan += temp[i];
+      } else {
+          jutaan += temp[i];
+      }
+  }
+
+  let result = "";
+  
+  if (temp.length > 6) {
+    result += `${jutaan.split("").reverse().join("")}.`;
+  }
+
+  if (temp.length > 3) {
+    result += `${ribuan.split("").reverse().join("")}.`;
+  }
+  
+  if(temp.length > 0) {
+    result += ratusan.split("").reverse().join("");
+  }
+
+  return result
+}; %>
+
+<!-- Single Product -->
+<section id="single-product" class="single-product">
+  <div class="container">
+    <div class="single-product-back">
+      <a href="<%= mainRoutes.home %>">
+        <span>
+          <i class="fas fa-chevron-left"></i>
+        </span>
+        Kembali
+      </a>
+    </div>
+
+    <div class="single-product-item">
+      <div class="single-product-item-img">
+        <img src="<%= laptop.src %>1_1.png" alt="Laptop <%= laptop.name %>" />
+      </div>
+
+      <div class="single-product-item-description">
+        <div class="single-product-item-description-link">
+          <a href="<%= mainRoutes.home %>">Home</a>
+
+          <span>
+            <i class="fas fa-chevron-right"></i>
+          </span>
+
+          <a href="<%= mainRoutes.laptop %>">Laptop</a>
+
+          <span>
+            <i class="fas fa-chevron-right"></i>
+          </span>
+
+          <a href="<%= mainRoutes.singleProduct %>/<%= laptop.id %>">
+            <%= laptop.name %>
+          </a>
+        </div>
+
+        <h1><%= laptop.name %></h1>
+        <h2>Rp. <%= formatCurrency(laptop.price) %></h2>
+        <p><%= laptop.text %></p>
+
+        <button class="btn">Tambahkan ke keranjang</button>
+      </div>
+    </div>
+
+    <div class="single-product-display-another-item">
+      <div>
+        <% for( let i = 1; i <= 3; i++ ) { %>
+        <div class="single-product-display-another-item-img">
+          <img
+            src="<%= laptop.src %><%= i %>.png"
+            alt="Gambar <%= laptop.name %> ke <%= i %>"
+          />
+        </div>
+        <% } %>
+      </div>
+
+      <div></div>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  <script>
+    // Single Product
+    // Get DOM Elements
+    const addProductBtn = document.querySelector(
+      ".single-product-item-description .btn"
+    );
+
+    // Functions & Events
+    const checkAddProductBtn = () => {
+      addProductBtn.disabled = true;
+      addProductBtn.cursor = "default";
+      addProductBtn.style.backgroundColor = "#283542";
+      addProductBtn.innerText = "Data sudah di keranjang";
+      cartCheckout.disabled = false;
+    };
+
+    if ("<%= data %>" == "true") checkAddProductBtn();
+
+    addProductBtn.addEventListener("click", () => {
+      // prettier-ignore
+      axios
+        .get(`<%= mainRoutes.cart %>/<%= laptop.id %>`)
+        .then((result) => {
+          if (result != null) {
+            checkAddProductBtn()
+
+            axios
+              .get(`/cart/read/<%= users.email %>`)
+              .then((results) => {
+                let htmlCartContainer = "";
+                results.data.forEach(cart => {
+                  htmlCartContainer += `
+                  <div class="cart-item">
+                      <div class="cart-item-box">
+                        <div class="cart-item-img">
+                          <img src="${cart.src}1_1.png" alt="Laptop ${cart.name}" />
+                        </div>
+
+                        <div class="cart-item-detail">
+                          <p>${cart.name}</p>
+                          <p>Rp. ${jsFormatCurrency(cart.price)}</p>
+                        </div>
+
+                        <div class="cart-item-action">
+                          <div class="cart-item-action-counter">
+                            <span class="cart-item-action-counter remove" data-id="${cart.id}">
+                              <i class="fas fa-minus-circle"></i>
+                            </span>
+
+                            <p>${cart.amount}</p>
+
+                            <span class="cart-item-action-counter add" data-id="${cart.id}">
+                              <i class="fas fa-plus-circle"></i>
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+
+                      <span class="cart-item-close" data-id="${cart.id}">
+                        <i class="fas fa-times"></i>
+                      </span>
+                    </div>
+                    `;
+                  cartContainer.innerHTML = htmlCartContainer;
+                })
+                
+                let total = 0
+                results.data.forEach(data => {
+                  total = total + (data.amount * data.price)
+                })
+                cartTotal.innerText = `Rp. ${jsFormatCurrency(total)}`
+
+                cartDOM.style.display = 'block';
+              })
+        }
+      })
+    });
+  </script>
+</section>
+<!-- End of Single Product -->

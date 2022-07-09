@@ -1,0 +1,54 @@
+<!-- Header -->
+<header id="header" class="header">
+  <div class="container">
+    <div class="header-logo">
+      <a href="<%= mainRoutes.home %>">
+        <h1>AfterCode.js</h1>
+      </a>
+    </div>
+
+    <div class="header-nav">
+      <% navs.forEach(nav => { %>
+      <a href="<%= nav.link %>"><%= nav.name %></a>
+      <% }) %>
+    </div>
+
+    <div class="header-user-nav">
+      <!-- prettier-ignore -->
+      <% userNavs.forEach(userNav => { %>
+      <% if (typeof users != 'undefined' && userNav.iconLink == 'user') { %>
+      <a class="text" href="#">
+        <%= users.fullName %>
+        <span class="fas fa-caret-down"></span>
+      </a>
+      <% } else { %>
+      <a href="<%= userNav.link %>">
+        <span class="fas fa-<%= userNav.iconLink %>"></span>
+      </a>
+      <% } }) %>
+
+      <div class="header-user-nav-account">
+        <a class="logout" href="<%= mainRoutes.logout %>">Log out</a>
+      </div>
+    </div>
+
+    <div class="header-hamburger">
+      <span>
+        <i class="fas fa-bars"></i>
+      </span>
+
+      <div class="header-hamburger-menu">
+        <div class="container">
+          <span>
+            <i class="far fa-times-circle"></i>
+          </span>
+
+          <% navs.forEach(nav => { %>
+          <a href="<%= nav.link %>"><%= nav.name %></a>
+          <% }) %>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+<!-- End of Header -->

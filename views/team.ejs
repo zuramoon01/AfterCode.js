@@ -1,0 +1,21 @@
+<!-- Team -->
+<section id="team" class="team">
+  <h1>TIM KAMI</h1>
+
+  <% teams.forEach(team => { %>
+  <div class="team-person">
+    <div class="team-person-img">
+      <img
+        src="../public/img/<%= team.src %>.png"
+        alt="Tim - Anggota - <%= team.name %>"
+      />
+    </div>
+
+    <div class="team-person-description">
+      <p><%= team.name %></p>
+      <p><%= team.job %></p>
+    </div>
+  </div>
+  <% }) %>
+</section>
+<!-- End of Team -->

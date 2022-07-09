@@ -1,0 +1,67 @@
+<!-- Account Log In -->
+<section id="account" class="account">
+  <div class="account-display pana">
+    <img src="../public/img/blob-pana.svg" alt="Blob Background" />
+
+    <div class="account-display-img">
+      <img src="../public/img/fingerprint-pana.svg" alt="Fingerprint Amico" />
+    </div>
+
+    <a href="#" class="btn">
+      <span class="fab fa-google-plus-g"></span>
+      LOG IN WITH GOOGLE
+    </a>
+  </div>
+
+  <div class="account-form">
+    <div class="account-form-title-container">
+      <div class="account-form-title">
+        <h1>LOGIN AKUN</h1>
+        <p>Log In</p>
+      </div>
+    </div>
+
+    <form
+      action="<%= mainRoutes.login %>"
+      class="account-form-form"
+      method="post"
+    >
+      <div class="account-form-container-form">
+        <!-- prettier-ignore -->
+        <% inputAccounts.forEach(input => { %>
+        <% if (input.type == 'email' || input.type == 'password') { %>
+        <div class="account-form-container">
+          <input
+            type="<%= input.type %>"
+            id="<%= input.name %>"
+            name="<%= input.name %>"
+            required
+          />
+
+          <label for="<%= input.name %>"><%= input.placeholder %></label>
+
+          <span></span>
+        </div>
+        <!-- prettier-ignore -->
+        <% } %>
+        <% }) %>
+
+        <!-- prettier-ignore -->
+        <%- include("./partials/messages.ejs") %>
+
+        <div class="account-form-action">
+          <button class="btn" type="submit">Log In</button>
+          <a href="<%= mainRoutes.signin %>" class="btn">Sign In</a>
+        </div>
+
+        <div class="account-form-confirm">
+          <p>
+            Belum punya akun?
+            <a href="<%= mainRoutes.signin %>">Sign In</a>
+          </p>
+        </div>
+      </div>
+    </form>
+  </div>
+</section>
+<!-- End of Account Log In -->

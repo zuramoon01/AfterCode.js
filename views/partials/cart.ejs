@@ -1,0 +1,284 @@
+<!-- prettier-ignore -->
+<% const formatCurrency = (data) => {
+  let temp = data.toString().split("").reverse();
+  let ratusan = "";
+  let ribuan = "";
+  let jutaan = "";
+
+  for (let i = 0; i < temp.length; i++) {
+      if (i < 3) {
+          ratusan += temp[i];
+      } else if (i < 6) {
+          ribuan += temp[i];
+      } else {
+          jutaan += temp[i];
+      }
+  }
+
+  let result = "";
+
+  if (temp.length > 6) {
+    result += `${jutaan.split("").reverse().join("")}.`;
+  }
+
+  if (temp.length > 3) {
+    result += `${ribuan.split("").reverse().join("")}.`;
+  }
+  
+  if(temp.length > 0) {
+    result += ratusan.split("").reverse().join("");
+  }
+
+  return result
+}; %>
+
+<!-- Cart -->
+<section id="cart" class="cart">
+  <div class="container"></div>
+
+  <span class="cart-close">
+    <i class="fas fa-times"></i>
+  </span>
+
+  <div class="cart-menu">
+    <h1>Keranjang Belanja</h1>
+
+    <div class="cart-items"></div>
+
+    <div class="cart-checkout">
+      <div class="cart-checkout-total">
+        <h1>Total</h1>
+        <% let total = 0 %> <% carts.forEach(cart => { %> <% total = total +
+        (parseInt(cart.amount) * parseInt(cart.price)) %> <% }) %>
+        <h1>Rp. <%= formatCurrency(total) %></h1>
+      </div>
+
+      <button class="btn">Checkout</button>
+    </div>
+
+    <div class="cart-success">
+      <p>Checkout Berhasil</p>
+    </div>
+  </div>
+</section>
+<!-- End of Cart -->
+
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script>
+  // Cart
+  // Get DOM Elements
+  const cartDOM = document.querySelector("#cart");
+  const cartOverlay = document.querySelector("#cart .container");
+  const closeCartBtn = document.querySelector(".cart-close");
+  const navCart = document.querySelectorAll(".header-user-nav a")[0];
+
+  const cartContainer = document.querySelector(".cart-items");
+
+  const cartTotal = document.querySelectorAll(".cart-checkout-total h1")[1];
+  const cartCheckout = document.querySelector(".cart-checkout button.btn");
+  cartCheckout.disabled = true;
+
+  const cartSuccess = document.querySelector(".cart-success");
+
+  // Functions and Events
+  let jsFormatCurrency = (data) => {
+    let temp = data.toString().split("").reverse();
+    let ratusan = "";
+    let ribuan = "";
+    let jutaan = "";
+
+    for (let i = 0; i < temp.length; i++) {
+      if (i < 3) {
+        ratusan += temp[i];
+      } else if (i < 6) {
+        ribuan += temp[i];
+      } else {
+        jutaan += temp[i];
+      }
+    }
+
+    let result = "";
+
+    if (temp.length > 6) {
+      result += `${jutaan.split("").reverse().join("")}.`;
+    }
+
+    if (temp.length > 3) {
+      result += `${ribuan.split("").reverse().join("")}.`;
+    }
+
+    if (temp.length > 0) {
+      result += ratusan.split("").reverse().join("");
+    }
+
+    return result;
+  };
+
+  const checkRemoveProductBtn = () => {
+    addProductBtn.disabled = false;
+    addProductBtn.cursor = "pointer";
+    addProductBtn.style.backgroundColor = "#1f2933";
+    addProductBtn.innerText = "Tambahkan ke keranjang";
+  };
+
+  const cartEvent = (element, display) => {
+    element.addEventListener("click", () => {
+      cartDOM.style.display = display;
+    });
+  };
+
+  cartEvent(cartOverlay, "none");
+  cartEvent(closeCartBtn, "none");
+  cartEvent(navCart, "block");
+
+  const cartList = () => {
+    let htmlCartContainer = "";
+    ("<% carts.forEach(cart => { %>");
+    htmlCartContainer += `
+  <div class="cart-item">
+      <div class="cart-item-box">
+        <div class="cart-item-img">
+          <img src="<%= cart.src %>1_1.png" alt="Laptop <%= cart.name %>" />
+        </div>
+
+        <div class="cart-item-detail">
+          <p><%= cart.name %></p>
+          <p>Rp. <%= formatCurrency(cart.price) %></p>
+        </div>
+
+        <div class="cart-item-action">
+          <div class="cart-item-action-counter">
+            <span class="cart-item-action-counter remove" data-id="<%= cart.id %>">
+              <i class="fas fa-minus-circle"></i>
+            </span>
+
+            <p><%= cart.amount %></p>
+
+            <span class="cart-item-action-counter add" data-id="<%= cart.id %>">
+              <i class="fas fa-plus-circle"></i>
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <span class="cart-item-close" data-id="<%= cart.id %>">
+        <i class="fas fa-times"></i>
+      </span>
+    </div>
+    `;
+    ("<% }) %>");
+    cartContainer.innerHTML = htmlCartContainer;
+    if (cartContainer.childElementCount > 0) cartCheckout.disabled = false;
+  };
+
+  document.addEventListener("DOMContentLoaded", () => {
+    cartList();
+
+    const cartTotalValue = () => {};
+    cartTotalValue();
+
+    cartContainer.addEventListener("click", (e) => {
+      if (e.target.parentElement.classList.contains("add")) {
+        let id = e.target.parentElement.dataset.id;
+        let amount = e.target.parentElement.previousElementSibling;
+
+        if (amount.innerText == "10") {
+          log("Max");
+        } else {
+          axios.get(`/cart/add/${id}/${amount.innerText}`).then((results) => {
+            if (results != null) {
+              result = results.data.find((cart) => cart.id === parseInt(id));
+              amount.innerText = result.amount;
+            }
+
+            let total = 0;
+            results.data.forEach((data) => {
+              total = total + data.amount * data.price;
+            });
+            cartTotal.innerText = `Rp. ${jsFormatCurrency(total)}`;
+          });
+        }
+      } else if (e.target.parentElement.classList.contains("remove")) {
+        let id = e.target.parentElement.dataset.id;
+        let amount = e.target.parentElement.nextElementSibling;
+
+        if (amount.innerText == "1") {
+          axios.get(`/cart/delete/${id}`).then((result) => {
+            if (result != null) {
+              cartContainer.removeChild(
+                e.target.parentElement.parentElement.parentElement.parentElement
+                  .parentElement
+              );
+            }
+
+            let total = 0;
+            result.data.forEach((data) => {
+              total = total + data.amount * data.price;
+            });
+            cartTotal.innerText = `Rp. ${jsFormatCurrency(total)}`;
+
+            checkRemoveProductBtn();
+
+            if (cartContainer.childElementCount < 1) {
+              cartCheckout.disabled = true;
+            }
+          });
+        } else {
+          axios
+            .get(`/cart/remove/${id}/${amount.innerText}`)
+            .then((results) => {
+              if (results != null) {
+                result = results.data.find((cart) => cart.id === parseInt(id));
+                amount.innerText = result.amount;
+
+                let total = 0;
+                results.data.forEach((data) => {
+                  total = total + data.amount * data.price;
+                });
+                cartTotal.innerText = `Rp. ${jsFormatCurrency(total)}`;
+              }
+            });
+        }
+      } else if (e.target.parentElement.classList.contains("cart-item-close")) {
+        let id = e.target.parentElement.dataset.id;
+
+        axios.get(`/cart/delete/${id}`).then((result) => {
+          if (result != null) {
+            let total = 0;
+            cartContainer.removeChild(e.target.parentElement.parentElement);
+            result.data.forEach((data) => {
+              total = total + data.amount * data.price;
+            });
+            cartTotal.innerText = `Rp. ${jsFormatCurrency(total)}`;
+
+            checkRemoveProductBtn();
+
+            if (cartContainer.childElementCount < 1) {
+              cartCheckout.disabled = true;
+            }
+          }
+        });
+      }
+    });
+
+    cartCheckout.addEventListener("click", () => {
+      axios
+        .get("/cart/delete/all")
+        .then((results) => {
+          if (results != null) {
+            cartContainer.innerHTML = "";
+            cartTotal.innerText = "Rp. 0";
+            checkRemoveProductBtn();
+          }
+        })
+        .then(() => {
+          cartSuccess.style.animation = "successCheckout 2s ease-in-out";
+          cartSuccess.style.display = "flex";
+
+          setTimeout(() => {
+            cartSuccess.style.display = "none";
+          }, 3000);
+        });
+    });
+  });
+</script>

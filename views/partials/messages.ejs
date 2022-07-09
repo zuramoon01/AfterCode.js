@@ -1,0 +1,22 @@
+<!-- prettier-ignore -->
+<% if (typeof errors != 'undefined') { %>
+<% errors.forEach(error => { %>
+<p>* <%= error.msg %></p>
+<!-- prettier-ignore -->
+<% }) %>
+<% } %>
+
+<!-- prettier-ignore -->
+<% if (success_msg != '') { %>
+<p class="success">* <%= success_msg %></p>
+<% } %>
+
+<!-- prettier-ignore -->
+<% if (error_msg != '') { %>
+<p>* <%= error_msg %></p>
+<% } %>
+
+<!-- prettier-ignore -->
+<% if (error != '') { %>
+<p>* <%= error %></p>
+<% } %>

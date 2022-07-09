@@ -1,0 +1,25 @@
+<!-- Footer -->
+<section id="footer" class="footer">
+  <div class="container">
+    <div class="footer-head">
+      <div class="footer-head-logo">
+        <a href="<%= mainRoutes.home %>">
+          <h1>AfterCode.js</h1>
+        </a>
+      </div>
+
+      <div class="footer-head-nav">
+        <% navs.forEach(nav => { %>
+        <a href="<%= nav.link %>"><%= nav.name %></a>
+        <% }) %>
+        <a href="#">Privacy & Policy</a>
+      </div>
+    </div>
+
+    <p class="color">
+      AfterCode.js is developed by AfterCode.js team in Medan, Indonesia.
+    </p>
+    <p>&copy; Copyright 2021 AfterCode.js.</p>
+  </div>
+</section>
+<!-- End of Footer -->

@@ -1,0 +1,82 @@
+<!-- Hero -->
+<section id="hero" class="hero">
+  <div class="container">
+    <div class="hero-title">
+      <h1>
+        Kinerja terbaik<br />Didukung oleh keinginan<br />Dibuat untuk terus
+        maju
+      </h1>
+
+      <p>
+        Menjual berbagai macam alat elektronik<br />seperti smartphone, laptop,
+        dan<br />komputer.
+      </p>
+
+      <a class="btn" href="<%= mainRoutes.laptop %>">
+        Mulai Jelajahi Produk Kami
+      </a>
+    </div>
+
+    <div class="hero-display">
+      <div class="hero-outer-circle">
+        <div class="hero-inner-circle">
+          <div class="hero-core-circle">
+            <img src="../public/img/laptop.svg" alt="Gambar Laptop SVG" />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- End of Hero -->
+
+<!-- Laptop -->
+<section id="laptop" class="laptop">
+  <h1><span>PRODUK</span> | <span>LAPTOP</span></h1>
+
+  <div class="laptop-display">
+    <% for( let i = 0; i < 2; i++ ) { laptops.forEach(laptop => { %>
+    <div class="laptop-section">
+      <div class="laptop-img">
+        <img src="<%= laptop.src %>1_1.png" alt="Laptop <%= laptop.name %>" />
+      </div>
+
+      <h2><%= laptop.name %></h2>
+
+      <div class="laptop-detail">
+        <a href="<%= mainRoutes.singleProduct %>/<%= laptop.id %>">
+          Lebih detail
+        </a>
+
+        <span>
+          <i class="fas fa-long-arrow-alt-right"></i>
+        </span>
+      </div>
+    </div>
+    <% }) } %>
+  </div>
+</section>
+<!-- End of Laptop -->
+
+<!-- Contact -->
+<section id="contact" class="contact">
+  <div class="container">
+    <div class="contact-text">
+      <h1>Hubungi Kami</h1>
+
+      <div class="contact-description">
+        <% contacts.forEach(contact => { %>
+        <div class="contact-description-contact">
+          <h3><%= contact.title %></h3>
+          <p><%= contact.content %></p>
+        </div>
+        <% }) %>
+      </div>
+    </div>
+
+    <div class="contact-img">
+      <img src="../public/img/mail-sent.svg" alt="Gambar Mail Sent" />
+    </div>
+  </div>
+</section>
+<!-- End of Contact -->
